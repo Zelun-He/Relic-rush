@@ -28,3 +28,4 @@ for(const [x,y] of [[3,3],[29,16],[61,6],[83,28],[5,52],[30,74],[55,58],[5,115],
 for(let i=0;i<5;i++){const x=62+i*38,y=i%2?130:91;rect(x-3,y-2,18,17,'#779c62');chest(x,y,i<results.length);}for(const [x,y] of [[86,136],[206,43],[217,153]]){rect(x,y+3,8,6,'#63866a');rect(x+1,y,6,6,'#a8b592');rect(x+2,y+1,3,2,'#d4d8aa');}
 const playerX=phase==='intro'||phase==='finished'?143:66+Math.min(room,4)*38,playerY=phase==='intro'||phase==='finished'?147:(room%2?144:106);explorer(playerX,playerY,frame);requestAnimationFrame(draw);}
 requestAnimationFrame(draw);renderMuseum();
+window.addEventListener('party-state',event=>{clearInterval(timer);if(event.detail){phase=event.detail.phase;room=event.detail.round;results=Array(event.detail.round+(['reveal','finished'].includes(event.detail.phase)?1:0)).fill('RELIC');}else{phase='intro';room=0;results=[];sections('intro');say('Gather your friends for an obscure-answer showdown, or explore solo.');}});
