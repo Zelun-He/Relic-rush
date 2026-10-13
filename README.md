@@ -25,6 +25,20 @@ Example: a 90-point answer submitted by two players earns 45 each; a unique 65-p
 
 Rooms synchronize by authenticated HTTP polling every 700 milliseconds. Each player receives a random secret session token kept in session storage, so refreshing the same tab reconnects. Answer validation, deadlines, capacity, and score totals are controlled by the server. Names are displayed as plain text. The host role transfers to an active player if the host leaves. After 60 seconds without requests, a player is marked inactive; refresh recovery works within that grace period. Joining after a match starts is blocked. Leave and create a new room to change the party.
 
+## Dungeon descent
+
+Each trivia round moves the expedition one floor deeper, using original procedural pixel art:
+
+| Round | Chamber | Depth | Entrance | Ambient animation |
+| --- | --- | --- | --- | --- |
+| 1 | Mossbound Cellar | 12 m | Camera drops down stone stairs | Dust and flickering torches |
+| 2 | Drowned Archives | 35 m | A suspended lift sinks into the chamber | Water ripples and rising bubbles |
+| 3 | Crystal Hollow | 80 m | A diamond-shaped iris opens | Sparkling purple crystals |
+| 4 | Ember Forge | 150 m | Explorer crosses the lava bridge | Flowing lava, drifting embers, furnace flames |
+| 5 | The Emerald Vault | 300 m | Giant stone doors slide apart | Orbiting emerald motes and spectral light |
+
+Entrances last 1.8 seconds and remain purely visual: the answer field stays usable. Friends mode anchors the entrance to the server's round start, so repeated polling never replays it and reconnecting midway shows the settled chamber. Rematches replay the five descents. Reduced-motion preference skips entrances and freezes ambient effects. Leaving a friend room returns to the jungle base camp.
+
 ## Server hosting
 
 Run Node.js 20+ with `npm start` on a host that supports a long-running Node HTTP process. `PORT` defaults to 5173 and `HOST` defaults to `0.0.0.0`. Serve frontend and API from the same origin. For local testing, use separate browser tabs to represent different players. Other devices on your network can use your computer’s LAN address and port, subject to its firewall.
@@ -53,6 +67,6 @@ Answer five open-ended trivia prompts within 25 seconds each. Curated rarity tie
 
 ## Structure
 
-`server/index.js`: Node HTTP server and static allowlist. `server/rooms.js`: authoritative rooms, sessions, timers, reveals, and scoring. `src/multiplayer.js`: room lobby, polling, submission UI, and scoreboard. `src/engine.js`: pure trivia and scoring. `src/main.js`: expedition state, persistence, sound, original canvas tiles. `src/style.css`: responsive UI. `tests/`: Node's built-in test runner. CI runs tests and static build on pushes and pull requests.
+`server/index.js`: Node HTTP server and static allowlist. `server/rooms.js`: authoritative rooms, sessions, timers, reveals, and scoring. `src/dungeon.js`: five animated floors and descent transitions. `src/multiplayer.js`: room lobby, polling, submission UI, and scoreboard. `src/engine.js`: pure trivia and scoring. `src/main.js`: expedition state, persistence, sound, original canvas tiles. `src/style.css`: responsive UI. `tests/`: Node's built-in test runner. CI runs tests and static build on pushes and pull requests.
 
 This project is independent and is not affiliated with Nintendo, Game Freak, Pokémon, or Krillion. Pokémon appears as a trivia topic only.

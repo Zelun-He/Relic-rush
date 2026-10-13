@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 import {resolve,extname} from 'node:path';
 import {Rooms,GameError} from './rooms.js';
 const root=fileURLToPath(new URL('../',import.meta.url));
-const publicFiles=new Set(['index.html','src/main.js','src/multiplayer.js','src/engine.js','src/style.css']);
+const publicFiles=new Set(['index.html','src/main.js','src/dungeon.js','src/multiplayer.js','src/engine.js','src/style.css']);
 export function createGameServer({rooms=new Rooms()}={}){
   const limits=new Map();
   const server=createServer(async(req,res)=>{

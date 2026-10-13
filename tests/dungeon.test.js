@@ -1,0 +1,8 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createDungeon,FLOORS} from '../src/dungeon.js';
+function canvas(){const calls=[];const ctx=new Proxy({calls},{get(target,key){if(key in target)return target[key];return (...args)=>{assert.ok(args.filter(x=>typeof x==='number').every(Number.isFinite));calls.push([key,target.fillStyle,...args]);};}});return ctx;}
+test('all five floors have distinct depths, palettes, and entrance animations',()=>{for(const property of ['name','depth','entry','floor'])assert.equal(new Set(FLOORS.map(f=>f[property])).size,5);});
+test('each entrance and its settled scene render without invalid coordinates',()=>{for(let round=0;round<5;round++){const ctx=canvas();let explorers=0;const dungeon=createDungeon(ctx,{explorer:()=>explorers++,chest:()=>{}});dungeon.enter(round,`round:${round}`,100);for(const time of [100,500,1200,1900,3000])assert.equal(dungeon.draw(time),true);assert.ok(ctx.calls.length>200);assert.ok(explorers>=5);assert.equal(dungeon.floor,FLOORS[round]);}});
+test('repeated multiplayer polls do not restart the descent',()=>{const ctx=canvas(),dungeon=createDungeon(ctx);assert.equal(dungeon.enter(1,'match:1:round:1',100),true);assert.equal(dungeon.enter(1,'match:1:round:1',900),false);dungeon.draw(1900);assert.ok(!ctx.calls.some(call=>call[0]==='fillText'));assert.equal(dungeon.enter(1,'match:2:round:1',2000),true);});
+test('reduced motion draws the destination directly; reset returns to camp',()=>{const ctx=canvas(),dungeon=createDungeon(ctx,{reducedMotion:true});dungeon.enter(4,'vault',0);dungeon.draw(0);assert.ok(!ctx.calls.some(call=>call[0]==='fillText'));dungeon.reset();assert.equal(dungeon.floor,null);assert.equal(dungeon.draw(500),false);});
